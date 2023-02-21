@@ -1,0 +1,43 @@
+(defpoll mem_used :interval "500ms" "scripts/mem_used")
+(defpoll time :interval "1s" "date '+ %I:%M'")
+(deflisten workspaces :inital "[]" "bash scripts/workspaces")
+(deflisten curworkspace :inital "1" "bash scripts/active_workspace")
+
+(defwidget workspaces-display [] 
+	(box
+		;; need the label for the color coding no idea why
+		(label :text "${curworkspace.id}" :visible false)
+		(for work in workspaces
+			(box :class "${curworkspace==work.id?"current":"${work.windows>0?"windows":""}"}"
+				(label :text "${work.id}")	
+			)	
+		)
+	)
+)
+
+(defwidget used-mem [] 
+	(label :class "example" :text "${mem_used} mb")
+)
+
+(defwidget bat-stat []
+	(label :class "${EWW_BATTERY.BAT0.capacity>80?"full":"${EWW_BATTERY.BAT0.capacity>50?"low":"risk"}"}" :text "${EWW_BATTERY.BAT0.capacity}%")
+)
+
+(defwindow example
+					 :monitor 0
+					 :geometry (geometry :x "0px"
+					 										 :y "0px"
+															 :width "100%"
+															 :height "15px"
+															 :anchor "top center")
+					 :windowtype "dock"
+					 :wm-ignore false
+			(box 
+				(workspaces-display)
+				(used-mem)
+				(bat-stat)
+				(box :class "time" 
+					(label :text "${time}")
+				)
+			)
+)
