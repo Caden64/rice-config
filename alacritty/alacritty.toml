@@ -1,0 +1,8 @@
+[font]
+size = 13
+
+[font.normal]
+family = "MonaspiceKr Nerd Font Mono"
+
+[window]
+opacity = 0.0
