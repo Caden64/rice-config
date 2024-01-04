@@ -1,33 +1,35 @@
-.example {
-	color: lightblue;
-	background-color:#202020;
+.back {
+  background-color: #232634;
+  border-radius: 7px;
 }
-
-.time {
-	color: aqua;
-}
-
-.current {
-	color:#202020;
-	background-color:lightblue;
-}
-
-.windows {
-	color: aqua;
-}
-
-.full {
-	color: lime;
-}
-
-.charging {
-	color: lime;
+.text {
+  color: #c6d0f5;
 }
 
 .low {
-	color: orange;
+  color: #e78284
 }
 
-.risk {
-	color: red;
+.warn {
+  color: #e5c890
+}
+
+.alright {
+  color: #ca9ee6
+}
+
+.good {
+  color: #85c1dc
+}
+
+.selected {
+  background-color: #85c1dc;
+  color: #232634;
+  border-radius: 5px;
+}
+.window {
+  background-color: #ca9ee6;
+  margin: 2px;
+  border-radius: 5px;
+  color: #232634;
 }

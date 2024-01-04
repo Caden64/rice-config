@@ -1,43 +1,41 @@
-(defpoll mem_used :interval "500ms" "scripts/mem_used")
-(defpoll time :interval "1s" "date '+ %I:%M'")
-(deflisten workspaces :inital "[]" "bash scripts/workspaces")
-(deflisten curworkspace :inital "1" "bash scripts/active_workspace")
+(defpoll time :interval "30s" `date "+%I:%M %p"`)
 
-(defwidget workspaces-display [] 
-	(box
-		;; need the label for the color coding no idea why
-		(label :text "${curworkspace.id}" :visible false)
-		(for work in workspaces
-			(box :class "${curworkspace==work.id?"current":"${work.windows>0?"windows":""}"}"
-				(label :text "${work.id}")	
-			)	
-		)
-	)
-)
+(defpoll mem :interval "5s" `bar_utilities/target/release/bar_utilities mem`)
 
-(defwidget used-mem [] 
-	(label :class "example" :text "${mem_used} mb")
-)
+(defpoll bat :interval "30s" `bar_utilities/target/release/bar_utilities bat`)
 
-(defwidget bat-stat []
-	(label :class "${EWW_BATTERY.BAT0.capacity>80?"full":"${EWW_BATTERY.BAT0.capacity>50?"low":"risk"}"}" :text "${EWW_BATTERY.BAT0.capacity}%")
-)
+(deflisten win_title :initial "idk" `bar_utilities/target/release/bar_utilities window`)
 
-(defwindow example
-					 :monitor 0
-					 :geometry (geometry :x "0px"
-					 										 :y "0px"
-															 :width "100%"
-															 :height "15px"
-															 :anchor "top center")
-					 :windowtype "dock"
-					 :wm-ignore false
-			(box 
-				(workspaces-display)
-				(used-mem)
-				(bat-stat)
-				(box :class "time" 
-					(label :text "${time}")
-				)
-			)
+(deflisten cur_workspace :initial 1 `bar_utilities/target/release/bar_utilities work`)
+
+(deflisten workspaces :initial "[]" `bar_utilities/target/release/bar_utilities open_windows`)
+
+(defwindow bar
+  :monitor 0
+  :geometry (geometry 
+    :x "0%"
+    :y "15px"
+    :width "95%"
+    :height "30px"
+    :anchor "top center"
+  )
+  :stacking "bg"
+  :reserve (structs 
+  :distance "20px"
+  :side "top"
+  :windowtype "dock"
+  :wm-ignore false
+  )
+  (box :class "back"
+  
+  (box
+    (for workspace in workspaces
+      (label :class "${workspace.id == cur_workspace ? "selected" : "${workspace.windows>0?"window":"text"}"}" :text "${workspace.id}")
+    )
+  )
+        
+  (label :class "text" :text {mem})
+  (label :class "text" :text {win_title})
+  (label :class "text" :text "${time}")
+  (label :class "${bat}" :text "${EWW_BATTERY.BAT0.capacity}%"))
 )
